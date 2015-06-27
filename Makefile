@@ -44,7 +44,7 @@ compile test clean: rebar
 keys: compile
 	rm -f priv/system_dir/ssh_host_rsa_key*
 	ssh-keygen -t rsa -P "" -f priv/system_dir/ssh_host_rsa_key
-	rm -f priv/user_dir/authorized_keys
+	rm -f priv/user_dir/authorized_keys id_rsa id_rsa.pub
 	ssh-keygen -t rsa -P "" -f id_rsa
 	chmod 600 id_rsa
 	cp id_rsa.pub priv/user_dir/authorized_keys
