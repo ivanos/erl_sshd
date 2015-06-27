@@ -1,0 +1,13 @@
+{application, erl_sshd,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  ssh
+                 ]},
+  {mod, { erl_sshd_app, []}},
+  {env, [{port, 11111}]}
+ ]}.
