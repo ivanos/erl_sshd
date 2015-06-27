@@ -46,7 +46,7 @@ handle_cast(start, State = #{port := Port,
     {ok, Pid} = ssh:daemon(Port, [{system_dir, SystemDir},
                                   {user_dir, UserDir}]),
     link(Pid),
-    {ok, State#{pid => Pid}};
+    {noreply, State#{pid => Pid}, hibernate};
 handle_cast(Msg, State) ->
     {stop, {unimplemented, cast, Msg}, State}.
 
