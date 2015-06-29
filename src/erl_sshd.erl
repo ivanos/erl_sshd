@@ -27,7 +27,7 @@ start_link() ->
 %% ------------------------------------------------------------------
 
 init(_) ->
-    Passwords = application:get_env, passwords, []),
+    Passwords = application:get_env(passwords, []),
     Port = application:get_env(erl_sshd, port, 11111),
     PrivDir = code:priv_dir(erl_sshd),
     SystemDir = filename:join([PrivDir, "system_dir"]),
