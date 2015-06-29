@@ -27,6 +27,7 @@ start_link() ->
 %% ------------------------------------------------------------------
 
 init(_) ->
+    Passwords = application:get_env, passwords, []),
     Port = application:get_env(erl_sshd, port, 11111),
     PrivDir = code:priv_dir(erl_sshd),
     SystemDir = filename:join([PrivDir, "system_dir"]),
@@ -35,6 +36,7 @@ init(_) ->
     {ok, #{port => Port,
            user_dir => UserDir,
            system_dir => SystemDir,
+           passwords => Passwords,
            pid => undefined}}.
 
 handle_call(Request, _From, State) ->
@@ -42,9 +44,11 @@ handle_call(Request, _From, State) ->
 
 handle_cast(start, State = #{port := Port,
                              user_dir := UserDir,
-                             system_dir := SystemDir}) ->
+                             system_dir := SystemDir,
+                             passwords := Passwords}) ->
     {ok, Pid} = ssh:daemon(Port, [{system_dir, SystemDir},
-                                  {user_dir, UserDir}]),
+                                  {user_dir, UserDir},
+                                  {user_passwords, Passwords}]),
     link(Pid),
     {noreply, State#{pid => Pid}, hibernate};
 handle_cast(Msg, State) ->
