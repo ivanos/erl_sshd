@@ -49,6 +49,9 @@ second element is the password.  These are strings.  For example:
 {passwords, [{"lincx","nbv123"}]}
 ```
 
+To use usernames and passwords, you must generate a hostkey.  Follow
+the instructions in `priv/system_dir` or use `make keys`.
+
 ### Example
 
 ```erlang
