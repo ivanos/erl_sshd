@@ -1,47 +1,56 @@
 # erl_sshd
 Wrapper around Erlang ssh module to make it easy to add an ssh shell
-to an Erlang node.
+to an Erlang node.  Add erl_sshd as rebar dependency and add
+erl_sshd configuration to your release's sys.config file.
 
 ## Requirements
 * Erlang 17+
-
-## Build
-```sh
-make
-```
 
 ## Using
 Add erl_sshd as a dependency in your rebar.config file.  Then follow the
 configuration instructions
 
 ## Configuration
-erl_sshd is configured via the application environment variables.  You
-can set these in your node's sys.config file (see example).
+erl_sshd is configured via its application environment variables. You
+can set these in your release's `sys.config` file (see example).
 
-The `port` application environment variable is the listener port number.
+The `port` environment variable is the listener port number.
 
-You can use keys and/or usernames and passwords to gain access to the
+The `app` environment variable is the name of the application that is
+using erl_sshd as a dependency.  erl_sshd looks in the priv directory
+of this application for the system key and authorized keys file.
+
+You can use security keys and/or usernames and passwords to gain access to the
 shell.
 
 ### Using keys
-The host key is in `priv/system_dir` and the user authorized keys is in
-`priv/user_dir`.  You can generate keys with:
+The host key and the `authorized_keys` file holding the user authorized
+keys are in `priv/erl_sshd`.
+
+You can generate keys with:
 
 ```sh
-make keys
+% deps/erl_sshd/makekeys
 ```
 
-This creates a system key as `priv/system_dir/ssh_host_rsa_key`,
+This creates a system key as `priv/erl_sshd/ssh_host_rsa_key`,
 a public and private user key in the top directory, and a
-authorized keys file as `priv/user_dir/authorized_keys`.  The
+authorized keys file as `priv/erl_sshd/authorized_keys`.  The
 authorize keys file contains the generated public user key.
 
-You may also copy your own keys into the appropriate files.
+You may also copy your own keys into the `authorized_keys` file.
 
-See the README.md files in `priv/system_dir` and `priv/user_dir`.
+From the top level you can connect to your node using:
+
+```sh
+% ssh hostname -p 11122 -i id_rsa
+```
 
 ### Using usernames and passwords
-The `passwords` application environment variable key a list of
+Follow the instructions above to create keys.  The username/password
+authentication requires a system key to identify the host.
+
+The `passwords` environment variable is a list of
 two element tuples where the first element is the username and the
 second element is the password.  These are strings.  For example:
 
@@ -49,14 +58,14 @@ second element is the password.  These are strings.  For example:
 {passwords, [{"lincx","nbv123"}]}
 ```
 
-To use usernames and passwords, you must generate a hostkey.  Follow
-the instructions in `priv/system_dir` or use `make keys`.
+allows the user `lincx` to connect with the password `nbv123`.
 
 ### Example
 
 ```erlang
 [
   {erl_sshd, [
+                {app, dobby},
                 {port, 11122},
                 {passwords, [{"lincx","nbv1234"},
                              {"bobs","youruncle"}]}

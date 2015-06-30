@@ -1,0 +1,18 @@
+#!/bin/sh
+
+PRIVDIR="priv/erl_sshd"
+
+# Make the private dir
+mkdir -p "$PRIVDIR"
+
+# make host keys
+rm -f "$PRIVDIR/ssh_host_rsa_key*"
+ssh-keygen -t rsa -P "" -f "$PRIVDIR/ssh_host_rsa_key"
+
+# make user keys
+rm -f "$PRIVDIR/authorized_keys" id_rsa id_rsa.pub
+ssh-keygen -t rsa -P "" -f id_rsa
+chmod 600 id_rsa
+
+# use the user's public key as the first authorized key
+cp id_rsa.pub "$PRIVDIR/authorized_keys"

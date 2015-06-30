@@ -16,6 +16,8 @@
 -define(USERNAME, "username").
 -define(PASSWORD, "password").
 
+% create keys locally before running tests
+
 %%%=============================================================================
 %%% Callbacks
 %%%=============================================================================
@@ -63,6 +65,7 @@ can_connect(_Config) ->
 start_applications() ->
     ok = application:load(erl_sshd),
     ok = set_env(port, ?PORT),
+    ok = set_env(app, erl_sshd),
     ok = set_env(passwords, [{?USERNAME,?PASSWORD}]),
     application:ensure_all_started(erl_sshd).
 
